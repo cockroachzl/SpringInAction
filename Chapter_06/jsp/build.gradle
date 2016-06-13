@@ -1,6 +1,12 @@
 apply plugin: 'eclipse'
 apply plugin: 'war'
 apply plugin: 'eclipse-wtp'
+//apply plugin: 'jetty'
+apply plugin: 'org.akhikhl.gretty'
+
+// JDK 8
+sourceCompatibility = 1.8
+targetCompatibility = 1.8
 
 dependencies {
 	compile "org.springframework:spring-webmvc:$springVersion"
@@ -21,21 +27,44 @@ dependencies {
 }
 
 repositories {
-	maven { url 'http://maven.springframework.org/release' }
-	maven { url 'http://maven.springframework.org/milestone' }
-	maven { url 'http://maven.springframework.org/snapshot' }
-	maven { url 'http://download.java.net/maven/2' }
-	mavenCentral()
+    mavenLocal()
+    mavenCentral()
+//	maven { url 'http://maven.springframework.org/release' }
+//	maven { url 'http://maven.springframework.org/milestone' }
+//	maven { url 'http://maven.springframework.org/snapshot' }
+//	maven { url 'http://download.java.net/maven/2' }
+
+}
+
+//Gretty Embedded Jetty
+buildscript {
+    repositories {
+        jcenter()
+    }
+
+    dependencies {
+        classpath 'org.akhikhl.gretty:gretty:+'
+    }
+}
+
+// Don't use Jetty8, even it's a servlet 3.0+ container,
+// but not support non-jar WebApplicationInitializer scanning.
+// It will cause "No Spring WebApplicationInitializer types detected on classpath"
+gretty {
+    port = 8080
+    contextPath = 'jsp'
+    servletContainer = 'jetty9' //tomcat7 or tomcat8
 }
 
 task wrapper(type: Wrapper) {
-    gradleVersion = '1.8'
+    gradleVersion = '2.13'
 }
 
 war {
-        baseName = 'spittr'
+        baseName = 'spittr-jsp'
 }
 
+//For Eclipse IDE only
 eclipse {
         wtp {
                 component {
