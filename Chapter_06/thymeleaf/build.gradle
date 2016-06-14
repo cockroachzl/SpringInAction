@@ -1,6 +1,11 @@
 apply plugin: 'eclipse'
 apply plugin: 'war'
 apply plugin: 'eclipse-wtp'
+apply plugin: 'org.akhikhl.gretty'
+
+sourceCompatibility = 1.8
+targetCompatibility = 1.8
+
 
 dependencies {
 	compile "org.springframework:spring-webmvc:$springVersion"
@@ -19,12 +24,31 @@ dependencies {
 }
 
 repositories {
-	maven { url 'http://maven.springframework.org/release' }
-	maven { url 'http://maven.springframework.org/milestone' }
-	maven { url 'http://maven.springframework.org/snapshot' }
-	maven { url 'http://download.java.net/maven/2' }
+//	  maven { url 'http://maven.springframework.org/release' }
+//    maven { url 'http://maven.springframework.org/milestone' }
+//    maven { url 'http://maven.springframework.org/snapshot' }
+//    maven { url 'http://download.java.net/maven/2' }
+    mavenLocal()
 	mavenCentral()
 }
+
+//Gretty Embedded Jetty
+buildscript {
+    repositories {
+        jcenter()
+    }
+
+    dependencies {
+        classpath 'org.akhikhl.gretty:gretty:+'
+    }
+}
+
+gretty {
+    port = 8080
+    contextPath = 'thymeleaf'
+    servletContainer = 'jetty9' //tomcat7 or tomcat8
+}
+
 
 task wrapper(type: Wrapper) {
     gradleVersion = '1.8'
